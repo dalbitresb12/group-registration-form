@@ -1,0 +1,37 @@
+{
+  "name": "next-typescript-tailwind-starter",
+  "description": "Starter Next.js project using TypeScript, Tailwind and some DevTools preconfigured.",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "NODE_ENV=production next build",
+    "start": "NODE_ENV=production next start",
+    "lint": "yarn run -s lint:code && yarn run -s lint:css",
+    "lint:code": "eslint --ext .js,.ts,.tsx . && tsc --noemit",
+    "lint:css": "stylelint **/*.css",
+    "analyze": "NODE_ENV=production ANALYZE=true next build",
+    "analyze:server": "NODE_ENV=production BUNDLE_ANALYZE=server next build",
+    "analyze:browser": "NODE_ENV=production BUNDLE_ANALYZE=server next build"
+  },
+  "dependencies": {
+    "@next/bundle-analyzer": "^10.1.3",
+    "autoprefixer": "^10.2.5",
+    "next": "10.1.3",
+    "postcss": "^8.2.10",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "tailwindcss": "^2.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.37",
+    "@types/react": "^17.0.3",
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
+    "@typescript-eslint/parser": "^4.22.0",
+    "eslint": "^7.24.0",
+    "eslint-plugin-react": "^7.23.2",
+    "stylelint": "^13.12.0",
+    "stylelint-config-standard": "^21.0.0",
+    "typescript": "^4.2.4"
+  }
+}
