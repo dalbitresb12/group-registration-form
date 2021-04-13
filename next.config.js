@@ -4,7 +4,7 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 
 module.exports = withBundleAnalyzer({
   images: {
-    domains: JSON.parse(process.env.STATIC_CONTENT_DOMAIN),
+    domains: JSON.parse(process.env.STATIC_CONTENT_DOMAIN || "[]"),
   },
   productionBrowserSourceMaps: process.env.PRODUCTION_SOURCE_MAPS === "true",
 });
