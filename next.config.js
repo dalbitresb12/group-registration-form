@@ -1,21 +1,25 @@
+// Use the SentryWebpack plugin to upload the source maps during build step
+const SentryWebpackPlugin = require('@sentry/webpack-plugin');
 const {
   STATIC_CONTENT_DOMAIN = "[]",
   PRODUCTION_SOURCE_MAPS,
-  NEXT_PUBLIC_SENTRY_DSN: SENTRY_DSN,
-  VERCEL_GIT_COMMIT_SHA,
   ANALYZE,
+  VERCEL_GIT_COMMIT_SHA,
+  NEXT_PUBLIC_SENTRY_DSN: SENTRY_DSN,
+  SENTRY_ORG,
+  SENTRY_PROJECT,
+  SENTRY_AUTH_TOKEN,
+  NODE_ENV,
 } = process.env;
 
 process.env.SENTRY_DSN = SENTRY_DSN;
+const basePath = "";
 
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: ANALYZE === "true",
 });
 
 module.exports = withBundleAnalyzer({
-  env: {
-    NEXT_PUBLIC_COMMIT_SHA: VERCEL_GIT_COMMIT_SHA,
-  },
   webpack: (config, options) => {
     // In `pages/_app.js`, Sentry is imported from @sentry/browser. While
     // @sentry/node will run in a Node.js environment. @sentry/node will use
@@ -44,6 +48,23 @@ module.exports = withBundleAnalyzer({
         ),
       })
     );
+
+    // When all the Sentry configuration env variables are available/configured
+    // The Sentry webpack plugin gets pushed to the webpack plugins to build
+    // and upload the source maps to sentry.
+    // This is an alternative to manually uploading the source maps
+    // Note: This is disabled in development mode.
+    if (SENTRY_DSN && SENTRY_ORG && SENTRY_PROJECT && SENTRY_AUTH_TOKEN && VERCEL_GIT_COMMIT_SHA && NODE_ENV === 'production') {
+      config.plugins.push(
+        new SentryWebpackPlugin({
+          include: '.next',
+          ignore: ['node_modules'],
+          stripPrefix: ['webpack://_N_E/'],
+          urlPrefix: `~${basePath}/_next`,
+          release: VERCEL_GIT_COMMIT_SHA,
+        }),
+      );
+    }
 
     return config;
   },
