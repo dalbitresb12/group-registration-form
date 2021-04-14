@@ -5,7 +5,7 @@ type FooterLinks = {
 
 const links: FooterLinks[] = [
   {
-    href: 'https://github.com/dalbitresb12',
+    href: 'https://github.com/dalbitresb12/group-registration-form',
     children: (
       <>
         Diseñado por Diego Albitres{' '}
