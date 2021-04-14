@@ -1,9 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import Airtable from 'airtable';
+import { StudentIdRegex } from '../../../utils/students';
 
 const airtableApiKey = process.env.AIRTABLE_API_KEY;
 const airtableBaseKey = process.env.AIRTABLE_BASE_KEY;
-const studentIdRegex = /^[uU]?[^uU]{1}[a-zA-Z0-9]{8}$/;
+
 
 export default async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
   if (req.method !== 'GET') {
@@ -21,7 +22,7 @@ export default async (req: NextApiRequest, res: NextApiResponse): Promise<void> 
     res.status(400).json({ error: 'No user ID was found.' });
     return;
   }
-  if (!studentIdRegex.test(id)) {
+  if (!StudentIdRegex.test(id)) {
     res.status(400).json({ error: 'Invalid user ID.' });
     return;
   }
@@ -35,7 +36,7 @@ export default async (req: NextApiRequest, res: NextApiResponse): Promise<void> 
     const records = await base
       .select({
         fields: ["Código", "Apellidos", "Nombres"],
-        filterByFormula: `FIND('${id.toLowerCase()}', LOWER({Código}))`,
+        filterByFormula: `AND({Grupo} = BLANK(), FIND('${id.toLowerCase()}', LOWER({Código})))`,
         maxRecords: 1,
         view: 'Grid view',
       })
