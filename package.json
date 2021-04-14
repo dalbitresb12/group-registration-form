@@ -1,6 +1,6 @@
 {
-  "name": "next-typescript-tailwind-starter",
-  "description": "Starter Next.js project using TypeScript, Tailwind and some DevTools preconfigured.",
+  "name": "group-registration-form",
+  "description": "Next.js web app to register class groups using Airtable.",
   "version": "0.1.0",
   "private": true,
   "scripts": {
