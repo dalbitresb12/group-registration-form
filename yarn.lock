@@ -3975,6 +3975,16 @@ svg-tags@^1.0.0:
   resolved "https://registry.yarnpkg.com/svg-tags/-/svg-tags-1.0.0.tgz#58f71cee3bd519b59d4b2a843b6c7de64ac04764"
   integrity sha1-WPcc7jvVGbWdSyqEO2x95krAR2Q=
 
+sweetalert2-react-content@^3.3.1:
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/sweetalert2-react-content/-/sweetalert2-react-content-3.3.1.tgz#2e0367bca36a5c0bfcc381a1b5fa90a51b35fff7"
+  integrity sha512-wg26qMZdH9a99Rd/6CMH85CKClfYYy6zI41tsN40tsbP4gTHO4zhITbp9y2TTytboFSH2DgKsJzuuEvPikWJtA==
+
+sweetalert2@^10.16.0:
+  version "10.16.0"
+  resolved "https://registry.yarnpkg.com/sweetalert2/-/sweetalert2-10.16.0.tgz#33d527af90689baab1078bf447b1986b796d4c75"
+  integrity sha512-qJp4nIpx0MPDnAdY6MurwH/mAovfCzWo07hFoQ41C46XGLpNkxiqBbJDNdhGfMFwbDY1e9jfttNFxe5IsrkEtA==
+
 table@^6.0.4, table@^6.0.7:
   version "6.0.9"
   resolved "https://registry.yarnpkg.com/table/-/table-6.0.9.tgz#790a12bf1e09b87b30e60419bafd6a1fd85536fb"

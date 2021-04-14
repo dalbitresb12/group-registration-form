@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FieldArrayWithId, Control, UseFormRegister, useFormState, useWatch, UseFormSetError, UseFormClearErrors } from 'react-hook-form';
+import { FieldArrayWithId, Control, UseFormRegister, useFormState, useWatch, UseFormTrigger } from 'react-hook-form';
 import { Input } from './input';
 import { GroupFormValues } from '../utils/groups';
 import { isEqualStudentId, isValidStudent, Student, StudentAPI } from '../utils/students';
@@ -11,12 +11,11 @@ export type Props = {
   index: number,
   control: Control<GroupFormValues>,
   register: UseFormRegister<GroupFormValues>,
-  setError: UseFormSetError<GroupFormValues>,
-  clearErrors: UseFormClearErrors<GroupFormValues>,
+  trigger: UseFormTrigger<GroupFormValues>,
 };
 
 export const StudentField = (props: Props): React.ReactElement => {
-  const { field, index, control, register } = props;
+  const { field, index, control, register, trigger } = props;
   const { errors } = useFormState({ control });
   const [studentInfo, setStudentInfo] = useState<Student>();
   const fieldArrayValues = useWatch({
@@ -58,7 +57,7 @@ export const StudentField = (props: Props): React.ReactElement => {
   const handleFetchStudent = async (student: string): Promise<StudentAPI | Error> => {
     try {
       const res = await fetch(`/api/students/${student}`);
-      const body = await res.json();  
+      const body = await res.json();
       return body as StudentAPI;
     } catch (err) {
       return err;
@@ -75,6 +74,8 @@ export const StudentField = (props: Props): React.ReactElement => {
       // If the value is not a valid student id, ignore this re-render
       if (!isValidStudent(currentValue)) {
         setStudentInfo(undefined);
+        // Always trigger revalidation of this field
+        trigger(fieldName);
         return;
       }
       // Try to fetch the new student
@@ -91,6 +92,8 @@ export const StudentField = (props: Props): React.ReactElement => {
               // Clear the data if no student was found
               setStudentInfo(undefined);
             }
+            // Always trigger revalidation of this field
+            trigger(fieldName);
           }
         })
         .catch(err => console.error(err));

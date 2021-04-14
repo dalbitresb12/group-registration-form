@@ -1,3 +1,5 @@
+import { Student } from './students';
+
 export type Group = {
   "Grupo": number,
   "Integrantes"?: string[],
@@ -12,4 +14,13 @@ export type GroupFormValues = {
   students: {
     value: string,
   }[],
+};
+
+export type GroupAPI = {
+  status: "ok",
+  group: {
+    "Grupo": number,
+    "Integrantes": Student[],
+    "Número de integrantes": number,
+  },
 };

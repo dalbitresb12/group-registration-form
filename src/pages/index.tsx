@@ -1,13 +1,14 @@
 import clsx from 'clsx';
 import Head from 'next/head';
 import { useForm, useFieldArray } from 'react-hook-form';
+import { ReactSwal } from '../components/alert';
 import { StudentField } from '../components/student-field';
-import { GroupFormValues } from '../utils/groups';
+import { GroupAPI, GroupFormValues } from '../utils/groups';
 
 const MAX_GROUP_COUNT = Number(process.env.NEXT_PUBLIC_MAX_GROUP_COUNT);
 
 const Home = (): React.ReactElement => {
-  const { control, register, handleSubmit, reset, setError, clearErrors } = useForm<GroupFormValues>({
+  const { control, register, handleSubmit, reset, trigger } = useForm<GroupFormValues>({
     defaultValues: {
       students: [{
         value: '',
@@ -43,11 +44,35 @@ const Home = (): React.ReactElement => {
         throw new Error(await res.text());
       }
 
-      const json = await res.json();
-      console.log(json);
+      const json = (await res.json()) as GroupAPI;
+      const quantity = json.group["Número de integrantes"];
+      const quantityStr = quantity === 1 ? `${quantity.toString()} integrante` : `${quantity.toString()} integrantes`;
+      const groupNum = json.group["Grupo"].toString();
+      // Informe the user the group was saved successfully
+      ReactSwal.fire({
+        icon: 'success',
+        title: <span className="text-2xl font-bold tracking-wide">¡Listo!</span>,
+        html: (
+          <p className="text-gray-700">
+            Tu grupo ha sido registrado satisfactoriamente con {quantityStr} como el{' '}
+            <span className="font-semibold">Grupo {groupNum}</span>.
+          </p>
+        ),
+      });
+      // Reset the form
       reset({ students: [{ value: '' }] });
     } catch (err) {
-      console.log(err);
+      // Inform the user something went wrong
+      ReactSwal.fire({
+        icon: 'error',
+        title: <span className="text-2xl font-bold tracking-wide">¡Uh-oh!</span>,
+        html: (
+          <p className="text-gray-700">
+            Ha sucedido un problema inesperado al intentar registrar tu grupo. Inténtalo
+            de nuevo más tarde o comunícate con el administrador.
+          </p>
+        ),
+      });
     }
   };
 
@@ -76,8 +101,7 @@ const Home = (): React.ReactElement => {
               field={field}
               index={index}
               register={register}
-              setError={setError}
-              clearErrors={clearErrors}
+              trigger={trigger}
             />)
           }
           <div>
