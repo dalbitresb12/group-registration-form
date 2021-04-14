@@ -1,6 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import Airtable from 'airtable';
 import { StudentIdRegex } from '../../../utils/students';
+import { init } from '../../../utils/sentry';
+
+// Initialize Sentry error logging
+init();
 
 const airtableApiKey = process.env.AIRTABLE_API_KEY;
 const airtableBaseKey = process.env.AIRTABLE_BASE_KEY;

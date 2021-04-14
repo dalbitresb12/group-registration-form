@@ -2,6 +2,10 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { isEqualStudentId, Student } from '../../utils/students';
 import type { Group, GroupCreationBody } from '../../utils/groups';
 import Airtable from 'airtable';
+import { init } from '../../utils/sentry';
+
+// Initialize Sentry error logging
+init();
 
 const airtableApiKey = process.env.AIRTABLE_API_KEY;
 const airtableBaseKey = process.env.AIRTABLE_BASE_KEY;
