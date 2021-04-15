@@ -7,7 +7,7 @@ const AUTH_DOMAIN = process.env.AUTH_DOMAIN;
 const JWKS_ENDPOINT = `${AUTH_DOMAIN}/cdn-cgi/access/certs`;
 const AUD_TAG = process.env.AUD_TAG;
 const JWT_ALGORITHM = process.env.JWT_ALGORITHM || "RS256";
-const JWT_HEADER = process.env.JWT_HEADER;
+const JWT_COOKIE = process.env.JWT_COOKIE;
 
 // Initialize remote JWKS
 const jwks = createRemoteJWKSet(new URL(JWKS_ENDPOINT));
@@ -34,11 +34,11 @@ export type IsAuthenticatedReturn = {
 };
 
 export const isAuthenticated = async (req: NextApiRequest): Promise<IsAuthenticatedReturn> => {
-  if (!JWT_HEADER) {
-    throw new Error("No JWT_HEADER was provided.");
+  if (!JWT_COOKIE) {
+    throw new Error("No JWT_COOKIE was provided.");
   }
 
-  const jwt = getHeader(req.headers[JWT_HEADER.toLowerCase()]);
+  const jwt = getHeader(req.headers[JWT_COOKIE.toLowerCase()]);
 
   if (!jwt) {
     return {
