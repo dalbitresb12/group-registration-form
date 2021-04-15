@@ -38,7 +38,7 @@ export const isAuthenticated = async (req: NextApiRequest): Promise<IsAuthentica
     throw new Error("No JWT_COOKIE was provided.");
   }
 
-  const jwt = getHeader(req.headers[JWT_COOKIE.toLowerCase()]);
+  const jwt = getHeader(req.cookies[JWT_COOKIE]);
 
   if (!jwt) {
     return {
