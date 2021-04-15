@@ -2,7 +2,8 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { isEqualStudentId, Student } from '../../utils/students';
 import type { Group, GroupCreationBody } from '../../utils/groups';
 import Airtable from 'airtable';
-import { init } from '../../utils/sentry';
+import { init, initTags } from '../../utils/sentry';
+import * as Sentry from '@sentry/node';
 
 // Initialize Sentry error logging
 init();
@@ -20,6 +21,9 @@ const validateBody = (body: any): body is GroupCreationBody => {
 };
 
 export default async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
+  // Initialize tags for Sentry
+  initTags(req);
+
   if (req.method && !ALLOWED_METHODS.includes(req.method)) {
     res.status(405).json({ error: 'Method not allowed' });
     return;
@@ -85,10 +89,10 @@ export default async (req: NextApiRequest, res: NextApiResponse): Promise<void> 
       }
     }
   } catch (err) {
-    if (err instanceof Error) {
-      res.status(500).json({ error: err.message });
-    } else {
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
+    const eventId = Sentry.captureException(err);
+    res.status(500).json({ error: 'Internal Server Error', eventId });
+    // Flushing before returning is necessary if deploying to Vercel, see
+    // https://vercel.com/docs/platform/limits#streaming-responses
+    await Sentry.flush(2000);
   }
 };

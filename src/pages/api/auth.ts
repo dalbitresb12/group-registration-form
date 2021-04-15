@@ -1,12 +1,15 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import * as Sentry from '@sentry/node';
-import { init } from '../../utils/sentry';
+import { init, initTags } from '../../utils/sentry';
 import { isAuthenticated } from '../../utils/auth';
 
 // Initialize Sentry error logging
 init();
 
 export default async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
+  // Initialize tags for Sentry
+  initTags(req);
+
   if (req.method !== "GET") {
     res.status(405).json({ error: 'Method not allowed' });
     return;

@@ -1,7 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import Airtable from 'airtable';
+import * as Sentry from '@sentry/node';
 import { StudentIdRegex } from '../../../utils/students';
-import { init } from '../../../utils/sentry';
+import { init, initTags } from '../../../utils/sentry';
 
 // Initialize Sentry error logging
 init();
@@ -11,6 +12,9 @@ const airtableBaseKey = process.env.AIRTABLE_BASE_KEY;
 
 
 export default async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
+  // Initialize tags for Sentry
+  initTags(req);
+
   if (req.method !== 'GET') {
     res.status(405).json({ error: 'Method not allowed' });
     return;
@@ -20,18 +24,18 @@ export default async (req: NextApiRequest, res: NextApiResponse): Promise<void> 
     res.status(500).json({ error: 'Invalid Airtable API keys.' });
     return;
   }
-
-  const id = Array.isArray(req.query.id) ? req.query.id[0] : req.query.id;
-  if (!req.query.id) {
-    res.status(400).json({ error: 'No user ID was found.' });
-    return;
-  }
-  if (!StudentIdRegex.test(id)) {
-    res.status(400).json({ error: 'Invalid user ID.' });
-    return;
-  }
-
+  
   try {
+    const id = Array.isArray(req.query.id) ? req.query.id[0] : req.query.id;
+    if (!req.query.id) {
+      res.status(400).json({ error: 'No user ID was found.' });
+      return;
+    }
+    if (!StudentIdRegex.test(id)) {
+      res.status(400).json({ error: 'Invalid user ID.' });
+      return;
+    }
+
     const airtable = new Airtable({
       apiKey: airtableApiKey,
     }).base(airtableBaseKey);
@@ -49,10 +53,10 @@ export default async (req: NextApiRequest, res: NextApiResponse): Promise<void> 
   
     res.status(200).json({ status: 'ok', items: records });
   } catch (err) {
-    if (err instanceof Error) {
-      res.status(500).json({ error: err.message });
-    } else {
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
+    const eventId = Sentry.captureException(err);
+    res.status(500).json({ error: 'Internal Server Error', eventId });
+    // Flushing before returning is necessary if deploying to Vercel, see
+    // https://vercel.com/docs/platform/limits#streaming-responses
+    await Sentry.flush(2000);
   }
 };

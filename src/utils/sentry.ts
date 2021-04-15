@@ -1,3 +1,4 @@
+import type { NextApiRequest } from 'next';
 import * as Sentry from '@sentry/node';
 import { RewriteFrames } from '@sentry/integrations';
 
@@ -33,4 +34,14 @@ export const init = (): void => {
       release: process.env.NEXT_PUBLIC_COMMIT_SHA,
     });
   }
+};
+
+export const initTags = (req: NextApiRequest): void => {
+  Sentry.setTags({
+    api: true,
+    url: req.url,
+    method: req.method,
+    httpVersion: req.httpVersion,
+    query: JSON.stringify(req.query),
+  });
 };
