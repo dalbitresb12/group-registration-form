@@ -1,6 +1,10 @@
+import { Layout } from '../../components/layout';
+
 const AdminPanel = (): React.ReactElement => {
+
   return (
-    <div>Hola</div>
+    <Layout title="Panel de administrador">
+    </Layout>
   );
 };
 

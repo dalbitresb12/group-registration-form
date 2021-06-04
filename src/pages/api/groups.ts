@@ -4,6 +4,9 @@ import type { Group, GroupCreationBody } from '../../utils/groups';
 import Airtable from 'airtable';
 import { init, initTags } from '../../utils/sentry';
 import * as Sentry from '@sentry/node';
+import { isAuthenticated } from '../../utils/auth';
+import Table from 'airtable/lib/table';
+import { QueryParams } from 'airtable/lib/query_params';
 
 // Initialize Sentry error logging
 init();
@@ -18,6 +21,11 @@ const validateBody = (body: any): body is GroupCreationBody => {
   if (typeof body !== 'object') return false;
   const { students } = body;
   return Array.isArray(students) && students.length > 0 && !students.some(item => typeof item !== "string");
+};
+
+const fetchRecords = async (base: Table, params: Omit<QueryParams, "view"> = {}) => {
+  const query = base.select({ ...params, view: 'Grid view' });
+
 };
 
 export default async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
@@ -40,24 +48,63 @@ export default async (req: NextApiRequest, res: NextApiResponse): Promise<void> 
     }).base(airtableBaseKey);
     const studentsBase = airtable('Estudiantes');
     const groupsBase = airtable('Grupos');
-  
+
     if (req.method === 'GET') {
-      const records = await groupsBase
-        .select({
-          fields: ["Grupo", "Número de integrantes"],
-          maxRecords: 50,
-          view: 'Grid view',
-        })
-        .all()
-        .then(items => items.map(item => item.fields as Group));
-    
-      res.status(200).json({ status: 'ok', items: records });
+      const auth = await isAuthenticated(req);
+
+      if (auth.authenticated) {
+        const students = await studentsBase
+          .select({
+            filterByFormula: 'NOT({Grupo} = BLANK())',
+            maxRecords: 50,
+            view: 'Grid view',
+          })
+          .all()
+          .then(items => items.map(item => item.fields as Student));
+        
+        const processed = students.reduce<Record<string, Student[]>>((acc, student) => {
+          const group = Array.isArray(student["Grupo"]) && student["Grupo"].length ? student["Grupo"][0] : undefined;
+          if (!group) return acc;
+          if (!Array.isArray(acc[group])) acc[group] = [];
+          acc[group].push(student);
+          return acc;
+        }, {});
+
+        const groups = await Promise.all(Object.keys(processed).map<Promise<Group>>(async (group) => {
+          const fetchedGroup = await groupsBase.find(group);
+          const fields = fetchedGroup.fields as Group;
+          return {
+            ...fields,
+            "Integrantes": processed[group],
+          };
+        }));
+
+        res.status(200).json({ status: 'ok', items: groups });
+      } else {
+        if (auth.tokenFound) {
+          const statusCode = auth.statusCode || 401;
+          const message = auth.message || 'Unauthorized';
+
+          res.status(statusCode).json({ error: message });
+        } else {
+          const records = await groupsBase
+            .select({
+              fields: ["Grupo", "Número de integrantes"],
+              maxRecords: 50,
+              view: 'Grid view',
+            })
+            .all()
+            .then(items => items.map(item => item.fields as Group));
+
+          res.status(200).json({ status: 'ok', items: records });
+        }
+      }
     } else {
       if (!validateBody(req.body)) {
         res.status(400).json({ error: 'Invalid body.' });
         return;
       }
-      
+
       const students = req.body.students.map(item => item.toLowerCase());
       const studentRecords = await studentsBase
         .select({
@@ -76,7 +123,7 @@ export default async (req: NextApiRequest, res: NextApiResponse): Promise<void> 
         if (matches) acc.push({ id: record.id, student: fields });
         return acc;
       }, []);
-      
+
       if (matchingRecords.length === students.length) {
         const record = await groupsBase.create({
           "Integrantes": matchingRecords.map(item => item.id),
