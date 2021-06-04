@@ -9,7 +9,9 @@ export type StudentAPI = {
   status: "ok",
   items: Student[],
 } | {
+  status?: undefined,
   error: string,
+  eventId?: string,
 };
 
 export const StudentIdRegex = /^[uU]?[^uU]{1}[a-zA-Z0-9]{8}$/;

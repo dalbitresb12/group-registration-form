@@ -28,9 +28,9 @@ export type IsAuthenticatedReturn = {
   user: JWTPayload,
 } | {
   authenticated: false,
+  tokenFound: boolean,
   statusCode?: number,
   message?: string,
-  user?: undefined,
 };
 
 export const isAuthenticated = async (req: NextApiRequest): Promise<IsAuthenticatedReturn> => {
@@ -43,6 +43,7 @@ export const isAuthenticated = async (req: NextApiRequest): Promise<IsAuthentica
   if (!jwt) {
     return {
       authenticated: false,
+      tokenFound: false,
     };
   }
 
@@ -62,12 +63,14 @@ export const isAuthenticated = async (req: NextApiRequest): Promise<IsAuthentica
       return {
         authenticated: false,
         statusCode: 400,
+        tokenFound: true,
         message: 'Invalid JWT token provided.',
       };
     } else if (err instanceof JOSEError) {
       return {
         authenticated: false,
         statusCode: 403,
+        tokenFound: true,
         message: 'Forbidden',
       };
     } else {

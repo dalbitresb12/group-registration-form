@@ -17,7 +17,7 @@ const ALLOWED_METHODS = ["GET", "POST"];
 const validateBody = (body: any): body is GroupCreationBody => {
   if (typeof body !== 'object') return false;
   const { students } = body;
-  return Array.isArray(students) && students.length > 0 && students.every(item => typeof item === 'string');
+  return Array.isArray(students) && students.length > 0 && !students.some(item => typeof item !== "string");
 };
 
 export default async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {

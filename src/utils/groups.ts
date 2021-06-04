@@ -2,7 +2,7 @@ import { Student } from './students';
 
 export type Group = {
   "Grupo": number,
-  "Integrantes"?: string[],
+  "Integrantes"?: Student[] | string[],
   "Número de integrantes": number,
 };
 
@@ -18,9 +18,19 @@ export type GroupFormValues = {
 
 export type GroupAPI = {
   status: "ok",
-  group: {
-    "Grupo": number,
-    "Integrantes": Student[],
-    "Número de integrantes": number,
-  },
+  group: Group,
+} | {
+  status?: undefined,
+  error: string,
+  eventId?: string,
+};
+
+
+export type AdminGroupAPI = {
+  status: "ok",
+  url: string,
+} | {
+  status?: undefined,
+  error: string,
+  eventId?: string,
 };

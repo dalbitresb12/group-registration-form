@@ -45,22 +45,43 @@ const Home = (): React.ReactElement => {
       }
 
       const json = (await res.json()) as GroupAPI;
-      const quantity = json.group["Número de integrantes"];
-      const quantityStr = quantity === 1 ? `${quantity.toString()} integrante` : `${quantity.toString()} integrantes`;
-      const groupNum = json.group["Grupo"].toString();
-      // Informe the user the group was saved successfully
-      ReactSwal.fire({
-        icon: 'success',
-        title: <span className="text-2xl font-bold tracking-wide">¡Listo!</span>,
-        html: (
-          <p className="text-gray-700">
-            Tu grupo ha sido registrado satisfactoriamente con {quantityStr} como el{' '}
-            <span className="font-semibold">Grupo {groupNum}</span>.
-          </p>
-        ),
-      });
-      // Reset the form
-      reset({ students: [{ value: '' }] });
+      if (json.status === "ok") {
+        const quantity = json.group["Número de integrantes"];
+        const quantityStr = quantity === 1 ? `${quantity.toString()} integrante` : `${quantity.toString()} integrantes`;
+        const groupNum = json.group["Grupo"].toString();
+        // Informe the user the group was saved successfully
+        ReactSwal.fire({
+          icon: 'success',
+          title: <span className="text-2xl font-bold tracking-wide">¡Listo!</span>,
+          html: (
+            <p className="text-gray-700">
+              Tu grupo ha sido registrado satisfactoriamente con {quantityStr} como el{' '}
+              <span className="font-semibold">Grupo {groupNum}</span>.
+            </p>
+          ),
+        });
+        // Reset the form
+        reset({ students: [{ value: '' }] });
+      } else {
+        // Inform the user something went wrong
+        ReactSwal.fire({
+          icon: 'error',
+          title: <span className="text-2xl font-bold tracking-wide">¡Uh-oh!</span>,
+          html: (
+            <>
+              <p className="text-gray-700">
+                Ha sucedido un problema inesperado al intentar registrar tu grupo. Inténtalo
+                de nuevo más tarde o comunícate con el administrador.
+              </p>
+              {json.eventId &&
+                <p className="text-xs text-gray-700 mt-2">
+                  En caso contactes al administrador, puedes darle el siguiente código de error: {json.eventId}
+                </p>
+              }
+            </>
+          ),
+        });
+      }
     } catch (err) {
       // Inform the user something went wrong
       ReactSwal.fire({
