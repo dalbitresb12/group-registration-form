@@ -11,16 +11,25 @@ const links: FooterLinks[] = [
         Diseñado por Diego Albitres{' '}
         <img src="/github.svg" alt="GitHub Logo" className="ml-2 h-6" />
       </>
-    )
+    ),
   },
   {
     href: 'https://vercel.com/',
     children: (
       <>
-        Hosteado por {' '}
+        Hosteado por{' '}
         <img src="/vercel.svg" alt="Vercel Logo" className="ml-2 h-4" />
       </>
-    )
+    ),
+  },
+  {
+    href: 'https://airtable.com/',
+    children: (
+      <>
+        Almacenamiento por{' '}
+        <img src="/airtable.svg" alt="Airtable logo" className="ml-2 h-4" />
+      </>
+    ),
   }
 ];
 
