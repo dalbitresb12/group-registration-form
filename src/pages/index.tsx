@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import { useForm, useFieldArray } from 'react-hook-form';
+import { UserRemoveIcon, UserAddIcon, UploadIcon } from '@heroicons/react/outline';
 import { ReactSwal } from '../components/alert';
 import { Layout } from '../components/layout';
 import { StudentField } from '../components/student-field';
@@ -122,29 +123,38 @@ const Home = (): React.ReactElement => {
         <div>
           <button
             type="button"
-            className={clsx("w-full text-white py-2 px-3 rounded-md transition", canRemove ? "bg-indigo-800 focus:bg-indigo-700 hover:bg-indigo-700 focus:ring-4" : "bg-indigo-400")}
+            className={clsx("w-full flex items-center justify-center text-white py-2 px-3 rounded-md transition", canRemove ? "bg-indigo-800 focus:bg-indigo-700 hover:bg-indigo-700 focus:ring-4" : "bg-indigo-400")}
             disabled={!canRemove}
             onClick={handleRemove}
           >
-            Eliminar
+            <UserRemoveIcon className="w-6 h-6 mr-2" />
+            <span>
+              Eliminar
+            </span>
           </button>
         </div>
         <div>
           <button
             type="button"
-            className={clsx("w-full text-white py-2 px-3 rounded-md transition", canAppend ? "bg-indigo-800 focus:bg-indigo-700 hover:bg-indigo-700 focus:ring-4" : "bg-indigo-400")}
+            className={clsx("w-full flex items-center justify-center text-white py-2 px-3 rounded-md transition", canAppend ? "bg-indigo-800 focus:bg-indigo-700 hover:bg-indigo-700 focus:ring-4" : "bg-indigo-400")}
             disabled={!canAppend}
             onClick={handleAppend}
           >
-            Añadir
+            <UserAddIcon className="w-6 h-6 mr-2" />
+            <span>
+              Añadir
+            </span>
           </button>
         </div>
         <div className="col-span-2">
           <button
             type="submit"
-            className="w-full text-white bg-indigo-800 focus:bg-indigo-700 hover:bg-indigo-700 focus:ring-4 py-2 px-3 rounded-md transition"
+            className="w-full flex items-center justify-center text-white bg-indigo-800 focus:bg-indigo-700 hover:bg-indigo-700 focus:ring-4 py-2 px-3 rounded-md transition"
           >
-            Enviar
+            <UploadIcon className="w-6 h-6 mr-2" />
+            <span>
+              Enviar
+            </span>
           </button>
         </div>
       </form>

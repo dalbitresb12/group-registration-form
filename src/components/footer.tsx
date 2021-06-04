@@ -30,17 +30,26 @@ const links: FooterLinks[] = [
         <img src="/airtable.svg" alt="Airtable logo" className="ml-2 h-4" />
       </>
     ),
+  },
+  {
+    href: 'https://heroicons.com/',
+    children: (
+      <>
+        Íconos por{' '}
+        <img src="/heroicons.svg" alt="Heroicons logo" className="ml-2 h-4" />
+      </>
+    )
   }
 ];
 
 export const Footer = (): React.ReactElement => {
   return (
-    <footer className="w-full h-32 border-t border-solid border-gray-200 flex flex-col justify-center items-center">
+    <footer className="w-full h-36 border-t border-solid border-gray-200 flex flex-col justify-center items-center">
       {links.map(link => (
         <a
           key={link.href}
           href={link.href}
-          className="flex justify-center items-center mb-2"
+          className="w-full flex justify-center items-center mb-2"
           target="_blank"
           rel="noopener noreferrer"
         >
