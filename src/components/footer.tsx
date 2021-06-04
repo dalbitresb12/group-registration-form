@@ -35,7 +35,7 @@ const links: FooterLinks[] = [
 
 export const Footer = (): React.ReactElement => {
   return (
-    <footer className="w-full h-24 border-t border-solid border-gray-200 flex flex-col justify-center items-center">
+    <footer className="w-full h-32 border-t border-solid border-gray-200 flex flex-col justify-center items-center">
       {links.map(link => (
         <a
           key={link.href}
