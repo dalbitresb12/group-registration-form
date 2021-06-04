@@ -14,7 +14,7 @@ export type StudentAPI = {
   eventId?: string,
 };
 
-export const StudentIdRegex = /^[uU]?[^uU]{1}[a-zA-Z0-9]{8}$/;
+export const StudentIdRegex = /^[uU]?[0-9]{4}[a-zA-Z0-9]{5}$/;
 
 export const isValidStudent = (id: string): boolean => {
   return StudentIdRegex.test(id);
