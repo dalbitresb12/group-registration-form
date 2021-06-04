@@ -11,6 +11,8 @@ init();
 const airtableApiKey = process.env.AIRTABLE_API_KEY;
 const airtableBaseKey = process.env.AIRTABLE_BASE_KEY;
 
+const maxPerGroup = Number(process.env.NEXT_PUBLIC_MAX_GROUP_COUNT) || 0;
+
 const ALLOWED_METHODS = ["GET", "POST"];
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -59,6 +61,11 @@ export default async (req: NextApiRequest, res: NextApiResponse): Promise<void> 
       }
       
       const students = req.body.students.map(item => item.toLowerCase());
+
+      if (students.length > maxPerGroup) {
+        res.status(400).json({ error: 'Invalid group.' });
+      }
+
       const studentRecords = await studentsBase
         .select({
           fields: ["Código", "Apellidos", "Nombres"],
