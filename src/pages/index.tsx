@@ -107,7 +107,7 @@ const Home = (): React.ReactElement => {
       </h1>
 
       <p className="mt-4 w-full max-w-3xl text-center text-gray-700">
-        Aquí podrás inscribir tu grupo para el Trabajo Final del curso de Algoritmos y Estructuras de Datos. Ten
+        Aquí podrás inscribir tu grupo para el Trabajo Final del curso de Aplicaciones para Dispositivos Móviles. Ten
         en cuenta que <span className="font-semibold">solo podrás inscribir a una persona si es que esta aun no tiene un grupo asignado</span>.
       </p>
 
