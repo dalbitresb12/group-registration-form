@@ -5,14 +5,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "NODE_ENV=production next build",
-    "start": "NODE_ENV=production next start",
+    "build": "next build",
+    "start": "next start",
     "lint": "yarn run -s lint:code && yarn run -s lint:css",
     "lint:code": "eslint --ext .js,.ts,.tsx . && tsc --noemit",
     "lint:css": "stylelint **/*.css",
-    "analyze": "NODE_ENV=production ANALYZE=true next build",
-    "analyze:server": "NODE_ENV=production BUNDLE_ANALYZE=server next build",
-    "analyze:browser": "NODE_ENV=production BUNDLE_ANALYZE=server next build"
+    "analyze": "ANALYZE=true next build",
+    "analyze:server": "BUNDLE_ANALYZE=server next build",
+    "analyze:browser": "BUNDLE_ANALYZE=server next build"
   },
   "dependencies": {
     "@heroicons/react": "^1.0.1",
