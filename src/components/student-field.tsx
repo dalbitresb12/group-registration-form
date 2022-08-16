@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { FieldArrayWithId, Control, UseFormRegister, useFormState, useWatch, UseFormTrigger } from 'react-hook-form';
 import { Input } from './input';
 import { GroupFormValues } from '../utils/groups';
@@ -25,7 +25,7 @@ export const StudentField = (props: Props): React.ReactElement => {
   });
   const fieldName = `students.${index}.value` as const;
   const fieldErrors = errors.students ? errors.students[index] : undefined;
-  const fieldRegistration = register(fieldName, {
+  const fieldRegistration = useMemo(() => register(fieldName, {
     required: {
       message: 'Este campo es obligatorio',
       value: true,
@@ -52,16 +52,12 @@ export const StudentField = (props: Props): React.ReactElement => {
         }
       }
     }
-  });
+  }), [fieldArrayValues, fieldName, register, studentInfo]);
 
-  const handleFetchStudent = async (student: string): Promise<StudentAPI | Error> => {
-    try {
-      const res = await fetch(`/api/students/${student}`);
-      const body = await res.json();
-      return body as StudentAPI;
-    } catch (err) {
-      return err;
-    }
+  const handleFetchStudent = async (student: string): Promise<StudentAPI> => {
+    const res = await fetch(`/api/students/${student}`);
+    const body = await res.json();
+    return body as StudentAPI;
   };
 
   useDebouncedEffect(() => {
@@ -81,22 +77,25 @@ export const StudentField = (props: Props): React.ReactElement => {
       // Try to fetch the new student
       handleFetchStudent(currentValue)
         .then(data => {
-          if (data instanceof Error || 'error' in data) {
-            // If the data isn't in sync, clear it
-            if (!synced) setStudentInfo(undefined);
-          } else if (Array.isArray(data.items)) {
-            if (data.items.length) {
-              // Display the data found
-              setStudentInfo(data.items[0]);
-            } else {
-              // Clear the data if no student was found
-              setStudentInfo(undefined);
-            }
-            // Always trigger revalidation of this field
-            trigger(fieldName);
+          if ('error' in data) {
+            throw new Error(`${data.error} (Event ID: ${data.eventId})`);
           }
+          
+          if (data.items.length) {
+            // Display the data found
+            setStudentInfo(data.items[0]);
+          } else {
+            // Clear the data if no student was found
+            setStudentInfo(undefined);
+          }
+          // Always trigger revalidation of this field
+          trigger(fieldName);
         })
-        .catch(err => console.error(err));
+        .catch(err => {
+          // If the data isn't in sync, clear it
+          if (!synced) setStudentInfo(undefined);
+          console.error(err);
+        });
     } else {
       // If there's no value in the textbox, clear the student information
       setStudentInfo(undefined);

@@ -23,7 +23,7 @@ const validateBody = (body: any): body is GroupCreationBody => {
   return Array.isArray(students) && students.length > 0 && !students.some(item => typeof item !== "string");
 };
 
-export default async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
+const handleRequest = async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
   // Initialize tags for Sentry
   initTags(req);
 
@@ -104,3 +104,5 @@ export default async (req: NextApiRequest, res: NextApiResponse): Promise<void> 
     await Sentry.flush(2000);
   }
 };
+
+export default handleRequest;

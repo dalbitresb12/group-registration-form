@@ -59,10 +59,10 @@ const createInputElement = (props: InputProps | TextAreaProps, className?: strin
   if (props.type === "textarea") {
     const { textAreaRef, ...attributes } = props;
     return <textarea ref={textAreaRef} className={className} {...attributes} />;
-  } else {
-    const { inputRef, ...attributes } = props;
-    return <input ref={inputRef} className={className} {...attributes} />;
   }
+
+  const { inputRef, ...attributes } = props;
+  return <input ref={inputRef} className={className} {...attributes} />;
 };
 
 export const Input = (props: Props): React.ReactElement | null => {

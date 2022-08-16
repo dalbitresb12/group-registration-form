@@ -68,9 +68,6 @@ module.exports = withBundleAnalyzer({
 
     return config;
   },
-  future: {
-    webpack5: true,
-  },
   images: {
     domains: JSON.parse(STATIC_CONTENT_DOMAIN),
   },

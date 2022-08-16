@@ -73,8 +73,8 @@ export const isAuthenticated = async (req: NextApiRequest): Promise<IsAuthentica
         tokenFound: true,
         message: 'Forbidden',
       };
-    } else {
-      throw err;
     }
+    
+    throw err;
   }
 };

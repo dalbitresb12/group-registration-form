@@ -18,7 +18,7 @@ const NotFound = (): React.ReactElement => {
 
   return (
     <Layout title="¿Estás seguro que esta página existe?">
-      <img className="w-full h-80" src={drawing} />
+      <img className="w-full h-80" src={drawing} alt="" />
 
       <h1 className="mt-8 text-3xl font-semibold">
         ¡Uh-oh!

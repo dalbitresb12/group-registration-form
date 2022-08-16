@@ -11,7 +11,7 @@ const airtableApiKey = process.env.AIRTABLE_API_KEY;
 const airtableBaseKey = process.env.AIRTABLE_BASE_KEY;
 
 
-export default async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
+const handleRequest = async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
   // Initialize tags for Sentry
   initTags(req);
 
@@ -26,7 +26,7 @@ export default async (req: NextApiRequest, res: NextApiResponse): Promise<void> 
   }
   
   try {
-    const id = Array.isArray(req.query.id) ? req.query.id[0] : req.query.id;
+    const id = (Array.isArray(req.query.id) ? req.query.id[0] : req.query.id) || "";
     if (!req.query.id) {
       res.status(400).json({ error: 'No user ID was found.' });
       return;
@@ -60,3 +60,5 @@ export default async (req: NextApiRequest, res: NextApiResponse): Promise<void> 
     await Sentry.flush(2000);
   }
 };
+
+export default handleRequest;

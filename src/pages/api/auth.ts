@@ -6,7 +6,7 @@ import { isAuthenticated } from '../../utils/auth';
 // Initialize Sentry error logging
 init();
 
-export default async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
+const handleRequest = async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
   // Initialize tags for Sentry
   initTags(req);
 
@@ -34,3 +34,5 @@ export default async (req: NextApiRequest, res: NextApiResponse): Promise<void> 
     await Sentry.flush(2000);
   }
 };
+
+export default handleRequest;

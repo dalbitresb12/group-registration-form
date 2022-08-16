@@ -1,21 +1,14 @@
+const defaultTheme = require("tailwindcss/defaultTheme");
+
 module.exports = {
-  mode: 'jit',
-  purge: ['./src/**/*.ts', './src/**/*.tsx'],
-  darkMode: false, // or 'media' or 'class'
+  content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
       fontFamily: {
-        inter:
-          '"Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
-        'inter-var':
-          '"Inter var", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
+        inter: ['"Inter"', ...defaultTheme.fontFamily.sans],
+        "inter-var": ['"Inter var"', ...defaultTheme.fontFamily.sans],
       },
     },
   },
-  variants: {
-    extend: {},
-  },
-  plugins: [
-    require('@tailwindcss/forms'),
-  ],
+  plugins: [require("@tailwindcss/forms")],
 };
