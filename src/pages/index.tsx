@@ -6,6 +6,7 @@ import { Layout } from '../components/layout';
 import { StudentField } from '../components/student-field';
 import { GroupAPI, GroupFormValues } from '../utils/groups';
 
+const MIN_GROUP_COUNT = Number(process.env.NEXT_PUBLIC_MIN_GROUP_COUNT);
 const MAX_GROUP_COUNT = Number(process.env.NEXT_PUBLIC_MAX_GROUP_COUNT);
 
 const Home = (): React.ReactElement => {
@@ -22,7 +23,8 @@ const Home = (): React.ReactElement => {
   });
 
   const canRemove = fields.length > 1;
-  const canAppend = fields.length < MAX_GROUP_COUNT;
+  const canAppend = Number.isNaN(MAX_GROUP_COUNT) ? true : fields.length < MAX_GROUP_COUNT;
+  const canSend = fields.length >= MIN_GROUP_COUNT && fields.length <= MAX_GROUP_COUNT;
   const handleAppend = () => {
     if (canAppend) append({ value: '' });
   };
@@ -50,7 +52,7 @@ const Home = (): React.ReactElement => {
         const quantity = json.group["Número de integrantes"];
         const quantityStr = quantity === 1 ? `${quantity.toString()} integrante` : `${quantity.toString()} integrantes`;
         const groupNum = json.group["Grupo"].toString();
-        // Informe the user the group was saved successfully
+        // Inform the user the group was saved successfully
         ReactSwal.fire({
           icon: 'success',
           title: <span className="text-2xl font-bold tracking-wide">¡Listo!</span>,
@@ -149,7 +151,8 @@ const Home = (): React.ReactElement => {
         <div className="col-span-2">
           <button
             type="submit"
-            className="w-full flex items-center justify-center text-white bg-indigo-800 focus:bg-indigo-700 hover:bg-indigo-700 focus:ring-4 py-2 px-3 rounded-md transition"
+            className={clsx("w-full flex items-center justify-center text-white py-2 px-3 rounded-md transition", canSend ? "bg-indigo-800 focus:bg-indigo-700 hover:bg-indigo-700 focus:ring-4" : "bg-indigo-400")}
+            disabled={!canSend}
           >
             <UploadIcon className="w-6 h-6 mr-2" />
             <span>
