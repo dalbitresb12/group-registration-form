@@ -86,6 +86,17 @@ export default async (req: NextApiRequest, res: NextApiResponse): Promise<void> 
       }, []);
       
       if (matchingRecords.length === students.length) {
+        await studentsBase.update(matchingRecords.map((record) => {
+          const index = students.findIndex(item => isEqualStudentId(record.student["Código"], item)) + 1;
+
+          return {
+            id: record.id,
+            fields: {
+              "Orden": index,
+            },
+          };
+        }));
+
         const record = await groupsBase.create({
           "Integrantes": matchingRecords.map(item => item.id),
         });
